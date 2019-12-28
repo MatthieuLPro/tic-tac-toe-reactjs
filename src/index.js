@@ -4,7 +4,7 @@ import './index.css';
 
 function Square(props) {
   return (
-    <button className="square"
+    <button className={ props.class }
             onClick={ props.onClick }>
       { props.value }
     </button>
@@ -12,9 +12,10 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-  renderSquare(i, key) {
+  renderSquare(i, key, className) {
     return (<Square key={ key }
                     value={ this.props.squares[i] }
+                    class={ className }
                     onClick={ () => this.props.onClick(i) } />);
   }
 
@@ -27,7 +28,7 @@ class Board extends React.Component {
               <div key={(i + 1) * 10} className="board-row">
                 {
                   [0, 1, 2].map((value_row, j) => {
-                    return (this.renderSquare(value_col + value_row, value_col + value_row))
+                    return (this.renderSquare(value_col + value_row, value_col + value_row, "square"))
                   })
                 }
               </div>
@@ -141,8 +142,8 @@ function calculateWinner(squares, step) {
 
   if (step < 9)
     return null;
-  else
-    return 'nul';
+
+  return 'nul';
 }
 
 // ========================================
