@@ -59,7 +59,7 @@ class Game extends React.Component {
     const row     = i < 3 ? '1' : i < 6 ? '2' : '3';
     const col     = (i % 3 === 0 ? '1' : i === 1 || i === 4 || i === 7 ? '2' : '3');
 
-    if (calculateWinner(current.squares) || squares[i])
+    if (calculateWinner(current.squares, this.state.stepNumber) || squares[i])
       return;
 
     squares[i] = this.state.xIsNext ? 'X' : 'O';
@@ -84,7 +84,7 @@ class Game extends React.Component {
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
-    const winner  = calculateWinner(current.squares);
+    const winner  = calculateWinner(current.squares, this.state.stepNumber);
 
     const moves = history.map((step, move) => {
       const desc = move ? 'Go back to turn n°' + move + ' ' + history[move].coup : 'Begin a new game';
@@ -99,8 +99,10 @@ class Game extends React.Component {
     });
 
     let status;
-    if (winner)
+    if (winner === 'X' || winner === 'O')
       status = winner + ' won!';
+    else if (winner === 'nul')
+      status = ' Nobody won!';
     else
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
@@ -119,14 +121,7 @@ class Game extends React.Component {
   }
 }
 
-// ========================================
-
-ReactDOM.render(
-  <Game />,
-  document.getElementById('root')
-);
-
-function calculateWinner(squares) {
+function calculateWinner(squares, step) {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -143,5 +138,16 @@ function calculateWinner(squares) {
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c])
        return squares[a];
   }
-  return null;
+
+  if (step < 9)
+    return null;
+  else
+    return 'nul';
 }
+
+// ========================================
+
+ReactDOM.render(
+  <Game />,
+  document.getElementById('root')
+);
